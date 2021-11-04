@@ -1,71 +1,45 @@
-import { useState,useEffect } from 'react';
+import { Chats } from "./Routes/chats";
+import { AppBar, Container, Stack, Button } from "@mui/material";
 
+import { Route, Switch, Link } from "react-router-dom";
+import { Profile } from "./Routes/profile";
+import { Home } from "./Routes/home";
 
-const App=() => {
-  const [messageList, setMessageList] = useState([]);
+const App = () => {
+  return (
+    <Container maxWidth="sm" sx={{ mt: 10 }}>
+      <AppBar color="inherit" position="static" sx={{ p: 2, mb: 1 }}>
+        <Stack direction="row" spacing={2}>
+          <Button variant="outlined" component={Link} to="/">
+            Home
+          </Button>
+          <Button variant="outlined" component={Link} to="/profile">
+            Profile
+          </Button>
+          <Button variant="outlined" component={Link} to="/chats">
+            Chats
+          </Button>
+        </Stack>
+      </AppBar>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
 
-  const [value,setValue] = useState('');
+        <Route path="/chats">
+          <Chats />
+        </Route>
 
-  const onChangeMessage = (event) => {
-        setValue(event.target.value);
-  };
+        <Route path="/profile">
+          <Profile />
+        </Route>
 
-  const sendMessage = (author, text) => {
-    const newMessageList = [...messageList];
-    const newMessage = {
-      author,
-      text,
-    }
-    newMessageList.push(newMessage);
-    setMessageList(newMessageList);
-  }
-
-  const resetValue = () => {
-    setValue('');
-  }
-
-  useEffect(() => {
-     if (messageList.length === 0) {
-       return
-     };
-
-     const lastEl = messageList[messageList.length-1];
-
-     if(lastEl.author === 'bot') {
-       return
-     };
-
-     const timerId = setTimeout(() => {
-      sendMessage ('bot', 'Hi!');
-     }, 1500);
-     return () => {
-       clearTimeout(timerId)
-      };
-     
-  }, [messageList])
- 
-  const onSubmit = (event) => {
-      event.preventDefault();
-      sendMessage('user', value);
-      resetValue();
-  }
-
- return (
-   <div>
-     <h1>Homework 2</h1>
-     <ul>
-     {messageList.map((item) => (<li>
-       {item.author} : {item.text}
-       </li>))}
-     </ul>
-     
-     <form onSubmit={onSubmit}>
-       <input value={value} type='text' onChange={onChangeMessage} />
-       <button type='submit'>Send</button>
-     </form>
-   </div>
- )
-}
+        <Route>
+          <h2>Page not found!</h2>
+        </Route>
+      </Switch>
+    </Container>
+  );
+};
 
 export default App;
-
