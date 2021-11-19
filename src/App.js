@@ -4,6 +4,7 @@ import { AppBar, Container, Stack, Button } from "@mui/material";
 import { Route, Switch, Link } from "react-router-dom";
 import { Profile } from "./Routes/profile/components/Profile";
 import { Home } from "./Routes/home";
+import { WaifusList } from "./Routes/waifu";
 
 const App = () => {
   return (
@@ -16,6 +17,9 @@ const App = () => {
           <Button variant="outlined" component={Link} to="/profile">
             Profile
           </Button>
+          <Button variant="outlined" component={Link} to="/waifu">
+            Get pic
+          </Button>
           <Button variant="outlined" component={Link} to="/chats">
             Chats
           </Button>
@@ -24,6 +28,10 @@ const App = () => {
       <Switch>
         <Route exact path="/">
           <Home />
+        </Route>
+
+        <Route exact path="/waifu">
+          <WaifusList />
         </Route>
 
         <Route path="/chats">
