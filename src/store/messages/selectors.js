@@ -1,5 +1,7 @@
-export const getMessagesFromStore = (state) => state.messages || {};
-export const getMessages = (state) =>
-  getMessagesFromStore(state).messages || {};
+export const getMessagesReducer = (state) => state.messages || {};
+export const getMessages = (state) => getMessagesReducer(state).messages || {};
 export const getChatMessagesById = (chatId) => (state) =>
-  getMessages(state)[chatId];
+  getMessages(state)[chatId] || {};
+
+export const getChatMessagesListById = (chatId) => (state) =>
+  Object.values(getChatMessagesById(chatId)(state));
