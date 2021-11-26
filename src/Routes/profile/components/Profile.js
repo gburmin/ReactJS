@@ -2,6 +2,10 @@ import { changeName } from "../../../store/profile/actions";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useCallback } from "react";
 
+export const ProfileTestIds = {
+  click: "Profile-click",
+};
+
 export const Profile = () => {
   const { name } = useSelector((state) => state.profile);
 
@@ -25,7 +29,9 @@ export const Profile = () => {
         <input type="text" value={value} onChange={handleChange} />
       </div>
       <div>
-        <button onClick={setName}>Change Name</button>
+        <button data-testid={ProfileTestIds.click} onClick={setName}>
+          Change Name
+        </button>
       </div>
       <div>{name}</div>
     </>
