@@ -1,20 +1,43 @@
-import { sendMessageWithThunk } from "../store/messages/actions";
+import {
+  offTrackingAddMessageWithThunk,
+  offTrackingRemoveMessageWithThunk,
+  onTrackingAddMessageWithThunk,
+  onTrackingRemoveMessageWithThunk,
+} from "../store/messages/actions";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { getChatMessagesById } from "../store/messages/selectors";
+import { getChatMessagesListById } from "../store/messages/selectors";
 import { hasChatById } from "../store/chats/selectors";
+import { useEffect } from "react";
+import { createMessage } from "../helpers";
+import { addMessageWithThunk } from "../store/messages/actions";
+import { auth } from "../services/firebase";
 
 export const withChatMessages = (Component) => {
   return (props) => {
     const profileName = useSelector((state) => state.profile.name);
-    const { chatId } = useParams();
     const dispatch = useDispatch();
-    const messageList = useSelector(getChatMessagesById(chatId));
+    const { chatId } = useParams();
+
+    const user = auth.currentUser;
+
+    const messageList = useSelector(getChatMessagesListById(chatId));
     const hasChat = useSelector(hasChatById(chatId));
 
     const onSendMessage = (text) => {
-      dispatch(sendMessageWithThunk(profileName, text, chatId));
+      const message = createMessage(user.uid, text);
+      dispatch(addMessageWithThunk(message, chatId));
     };
+
+    useEffect(() => {
+      dispatch(onTrackingAddMessageWithThunk(chatId));
+      dispatch(onTrackingRemoveMessageWithThunk(chatId));
+
+      return () => {
+        dispatch(offTrackingAddMessageWithThunk(chatId));
+        dispatch(offTrackingRemoveMessageWithThunk(chatId));
+      };
+    }, [chatId]);
 
     return (
       <Component
